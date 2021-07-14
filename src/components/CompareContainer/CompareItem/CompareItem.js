@@ -1,55 +1,78 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import classNames from "classnames";
 
+import useItem from "./useItem";
 import style from "./CompareItem.module.scss";
 
-const CompareItem = ({ name, role }) => {
-	const dispatch = useDispatch();
-	const item = useSelector((state) => findItem(state));
+const CompareItem = ({ name, role, index }) => {
+    const secondItemIndex = index === 0 ? 1 : 0;
+    const secondCompareItem = useSelector((state) => state.compareItems[secondItemIndex]);
 
-	useEffect(() => {
-		dispatch({ type: "DISABLE_ITEMS", payload: { role } });
-	}, [role, dispatch]);
+    const item = useItem(name, role);
+    const secondItem = useItem(secondCompareItem?.name, secondCompareItem?.role);
 
-	// function findItem(leagues) {
-	// 	let item;
+    const itemStatistics = { goals: item.goals, appearances: item.appearances, tackle: item.tackle };
+    const secondItemStatistics = {
+        goals: secondItem?.goals,
+        appearances: secondItem?.appearances,
+        tackle: secondItem?.tackle,
+    };
 
-	// 	leagues.some((league) => {
-	// 		if (role === "team") {
-	// 			item = league.teams.find((team) => team.name === name);
+    const itemStatisticsCompareVlues = [
+        { name: "goals", state: 0 },
+        { name: "appearances", state: 0 },
+        { name: "tackle", state: 0 },
+    ];
 
-	// 			if (item) {
-	// 				return true;
-	// 			}
+    function roteateInObjectAndGetMiddleValues(item, object) {
+        for (const key of Object.keys(object)) {
+            object[key] = getMiddleValues(item, key);
+        }
+    }
 
-	// 			return false;
-	// 		}
+    function getMiddleValues(item, property) {
+        const count = item?.players.reduce((count, player) => {
+            return (count += player[property]);
+        }, 0);
+        return count / item?.players.length;
+    }
 
-	// 		league.teams.some((team) => {
-	// 			item = team.players.find((player) => player.name === name);
+    if (role === "team") {
+        roteateInObjectAndGetMiddleValues(item, itemStatistics);
+        roteateInObjectAndGetMiddleValues(secondItem, secondItemStatistics);
+    }
 
-	// 			if (item) {
-	// 				return true;
-	// 			}
+    function compare(val1, val2) {
+        if (val1 > val2) return 1;
+        if (val1 < val2) return -1;
+        return 0;
+    }
 
-	// 			return false;
-	// 		});
+    itemStatisticsCompareVlues.forEach((compareValue, index) => {
+        const { name } = compareValue;
+        itemStatisticsCompareVlues[index].state = compare(itemStatistics[name], secondItemStatistics[name]);
+    });
 
-	// 		if (item) {
-	// 			return true;
-	// 		}
+    return (
+        <div className={style.compareItem}>
+            <h1>{name}</h1>
+            {itemStatisticsCompareVlues.map((compareValue, index) => {
+                const { name, state } = compareValue;
+                const stateClassName = classNames({
+                    [style.great]: state === 1,
+                    [style.small]: state === -1,
+                    [style.equal]: state === 0,
+                });
 
-	// 		return false;
-	// 	});
-
-	// 	return item;
-	// }
-
-	return (
-		<div className={style.compareItem}>
-			<h1>{item.name}</h1>
-		</div>
-	);
+                return (
+                    <h3>
+                        {name + ": "}
+                        <span className={stateClassName}>{itemStatistics[name]}</span>
+                    </h3>
+                );
+            })}
+        </div>
+    );
 };
 
 export default CompareItem;
