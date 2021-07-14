@@ -3,7 +3,15 @@ import classNames from "classnames";
 
 import style from "./DropDown.module.scss";
 
-const DropDown = ({ draggable, name, children }) => {
+const DropDown = ({
+	goals,
+	appearances,
+	tackle,
+	role,
+	draggable,
+	name,
+	children,
+}) => {
 	const [childrenVisibiliti, setChildrenVisibiliti] = useState(true);
 
 	const toggleChildrenVisibiliti = () => {
@@ -11,11 +19,31 @@ const DropDown = ({ draggable, name, children }) => {
 	};
 
 	const dragStart = (e) => {
-		e.dataTransfer.setData("text/plain", name);
+		if (role === "team") {
+			e.dataTransfer.setData("text/plain", [
+				name,
+				role,
+				goals(),
+				appearances(),
+				tackle(),
+			]);
+			return;
+		}
+		e.dataTransfer.setData("text/plain", [
+			name,
+			role,
+			goals,
+			appearances,
+			tackle,
+		]);
 	};
 
 	const childrenClassName = classNames(style.children, {
 		[style.childrenClose]: !childrenVisibiliti,
+	});
+
+	const buttonclassName = classNames(style.dropDownButton, {
+		[style.disabled]: !draggable,
 	});
 
 	return (
@@ -29,7 +57,7 @@ const DropDown = ({ draggable, name, children }) => {
 					</button>
 				)}
 				<button
-					className={style.dropDownButton}
+					className={buttonclassName}
 					draggable={draggable}
 					onDragStart={(e) => dragStart(e)}
 				>
