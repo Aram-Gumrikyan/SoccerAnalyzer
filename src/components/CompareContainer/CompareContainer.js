@@ -1,4 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
+import classNames from "classnames";
+import { useEffect, useState } from "react";
 
 import CompareItem from "./CompareItem";
 import style from "./CompareContainer.module.scss";
@@ -6,6 +8,18 @@ import style from "./CompareContainer.module.scss";
 const CompareContainer = () => {
 	const dispatch = useDispatch();
 	const compareItems = useSelector((state) => state.compareItems);
+
+	const [dragEnter, setDragEnter] = useState(false);
+
+	const containerClassName = classNames(style.compareContainer, {
+		[style.dragEnter]: dragEnter,
+	});
+
+	useEffect(() => {
+		document.addEventListener("dragend", (e) => {
+			setDragEnter(false);
+		});
+	}, []);
 
 	const drop = (e) => {
 		const [name, role] = e.dataTransfer.getData("text/plain").split(",");
@@ -20,9 +34,10 @@ const CompareContainer = () => {
 
 	return (
 		<div
-			className={style.compareContainer}
+			className={containerClassName}
 			onDragOver={(e) => e.preventDefault()}
 			onDrop={(e) => drop(e)}
+			onDragEnter={(e) => setDragEnter(true)}
 		>
 			{compareItems.map((item, index) => {
 				const { name, role } = item;

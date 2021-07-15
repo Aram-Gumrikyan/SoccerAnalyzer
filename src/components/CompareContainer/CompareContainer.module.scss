@@ -1,5 +1,10 @@
 .compareContainer {
 	margin: 1rem;
-	border: 4px dotted black;
 	display: flex;
+	background-color: #a6fff2;
+	border-radius: 10px;
+}
+
+.dragEnter {
+	background-color: #a7ff83;
 }

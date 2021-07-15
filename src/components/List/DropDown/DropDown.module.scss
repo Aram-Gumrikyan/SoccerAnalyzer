@@ -6,6 +6,16 @@
 	text-align: left;
 	font-family: inherit;
 	color: green;
+	margin: 0.1rem;
+}
+
+.dropDownIcon {
+	color: inherit;
+	transition: transform 0.3s;
+
+	&:hover {
+		transform: rotate(180deg) scale(2);
+	}
 }
 
 .name {

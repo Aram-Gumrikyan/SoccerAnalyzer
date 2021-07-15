@@ -79,8 +79,11 @@ const CompareItem = ({ name, role, index }) => {
 		<div className={style.compareItem}>
 			<div className={style.name}>
 				<h1>{name}</h1>
-				<button onClick={(e) => deleateItem(e)}>
-					<i className="fas fa-minus-circle"></i>
+				<button>
+					<i
+						className="fas fa-minus-circle"
+						onClick={(e) => deleateItem(e)}
+					></i>
 				</button>
 			</div>
 
@@ -93,7 +96,7 @@ const CompareItem = ({ name, role, index }) => {
 				});
 
 				return (
-					<h3 key={index}>
+					<h3 key={index} className={style.statistics}>
 						{name + ": "}
 						<span className={stateClassName}>{itemStatistics[name]}</span>
 					</h3>
