@@ -1,16 +1,34 @@
 .compareItem {
-    width: 100%;
-    text-align: center;
+	width: 100%;
+	margin: 1rem;
+	border-radius: 1rem;
+	text-align: center;
+	border: 1px solid black;
+}
+
+.name {
+	margin: 1rem;
+	display: grid;
+	grid-template-columns: 10fr 1fr;
+	button {
+		border: none;
+		background-color: transparent;
+		font-size: 2rem;
+
+		:active {
+			transform: scale(0.8);
+		}
+	}
 }
 
 .great {
-    color: green;
+	color: green;
 }
 
 .small {
-    color: red;
+	color: red;
 }
 
 .equal {
-    color: yellow;
+	color: yellow;
 }
